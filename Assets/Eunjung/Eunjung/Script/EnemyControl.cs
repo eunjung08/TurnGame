@@ -6,6 +6,12 @@ namespace Eunjung
 {
     public class EnemyControl : MonoBehaviour
     {
+        GameObject objEnemy;
+        Animator animator;
+        void Awake()
+        {
+            objEnemy = Resources.Load<GameObject>("Prefab/Enemy");
+        }
         void Start()
         {
         }
@@ -13,11 +19,13 @@ namespace Eunjung
         {
             for (int i = 0; i < num; i++)
             {
-                GameObject objEnemy = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                objEnemy.name = "Enemy " + i.ToString();
-                objEnemy.tag = "Enemy";
-                objEnemy.AddComponent<Unit>().unitName = "E" + i;
-                objEnemy.transform.position = new Vector3((i * 1.5f), -2, 0);
+                GameObject Enemy = Instantiate(objEnemy, new Vector3((i * 1.5f), -2, 0), new Quaternion(0f,180f,0f,0f));
+                //GameObject objEnemy = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                Enemy.name = "Enemy " + i.ToString();
+                Enemy.tag = "Enemy";
+                Enemy.AddComponent<Unit>().unitName = "E" + i;
+                animator = Enemy.GetComponent<Animator>();
+                //objEnemy.transform.position = new Vector3((i * 1.5f), -2, 0);
             }
         }
     }

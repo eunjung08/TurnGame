@@ -198,5 +198,53 @@ namespace Eunjung
             }
             uIControl.SetTextTurnOrder("현재 턴 : " + string.Join(" -> ", turnOrder));
         }
+
+        /// <summary>
+        /// 플레이어가 공격할 타겟 선정
+        /// </summary>
+        /// <param name="target"></param>
+        void SelectTarget(Unit target)
+        {
+            selectedTarget = target;
+            StartCoroutine(PlayerAttack());
+        }
+
+        /// <summary>
+        /// 플레이어가 공격
+        /// </summary>
+        /// <returns></returns>
+        IEnumerator PlayerAttack()
+        {
+            bool isDead = selectedTarget.Damage(currentPlayerUnit.attackDmg);
+            uIControl.SetTextIng(currentPlayerUnit.unitName + "가 " + selectedTarget.unitName + "를 공격!");
+
+            yield return new WaitForSeconds(1f);
+
+            if (isDead)
+            {
+                uIControl.SetTextIng(selectedTarget.unitName + "가 사망!");
+            }
+
+            ProcessTurn();
+        }
+
+        void Update()
+        {
+            if (isTargeting)
+            {
+                if (Input.GetMouseButtonDown(0))
+                {
+                    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                    RaycastHit hit;
+
+                    if(Physics.Raycast(ray, out hit))
+                    {
+                        // Raycast가 충돌한 오브젝트 출력
+                        // Debug.Log("클릭한 오브젝트: " + hit.collider.gameObject.name);
+                        SelectTarget(hit.collider.GetComponent<Unit>());
+                    }
+                }
+            }
+        }
     }
 }
